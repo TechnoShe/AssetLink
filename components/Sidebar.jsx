@@ -35,7 +35,7 @@ const Sidebar = () => {
         <div className="text-xl font-semibold mb-2">Quick Links</div>
         <ul>
           {navigation.map((item, id) => (
-            <li key={id} className="mb-2  p-2 rounded cursor-pointer">
+            <li key={id} className="mb-2  pl-4 p-1 rounded cursor-pointer">
               <a href={item.path} className="block text-md">
                 {item.title}
               </a>
