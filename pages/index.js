@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { Header } from "../components/index";
+import { Header, Sidebar } from "../components/index";
 
 export default function Home() {
   return (
@@ -8,6 +8,7 @@ export default function Home() {
         <title> AssetLink </title>
       </Head>
       <Header />
+      <Sidebar/>
     </section>
   );
 }
