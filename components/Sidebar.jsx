@@ -28,8 +28,8 @@ const Sidebar = () => {
 
   return (
     <div
-      style={{ background: "rgba(164, 178, 255, 0.2)" }}
-      className=" fixed top-20 left-0 w-64 h-[calc(100vh-120px)] p-4 m-6 rounded-md mb-2 shadow-2xl shadow-black"
+    //   style={{ background: "rgba(164, 178, 255, 0.2)" }}
+    //   className="top-20 left-0 w-64 h-[calc(100vh-120px)] p-4 m-6 rounded-md mb-2 shadow-2xl shadow-black"
     >
       <div className="mb-6">
         <div className="text-xl font-semibold mb-2">Quick Links</div>

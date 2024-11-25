@@ -13,5 +13,19 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".no-scrollbar": {
+          /* For WebKit browsers */
+          "-webkit-overflow-scrolling": "touch",
+          "-ms-overflow-style": "none" /* IE and Edge */,
+          "scrollbar-width": "none" /* Firefox */,
+          "&::-webkit-scrollbar": {
+            display: "none" /* Chrome, Safari, Opera */,
+          },
+        },
+      });
+    },
+  ],
 };

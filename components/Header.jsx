@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <nav
       style={{ background: "rgba(164, 178, 255, 0.2)" }}
-      className="px-10 py-3 flex-1 justify-center items-center  shadow-[0_5px_15px_rgba(0,0,0,0.7)]"
+      className=" fixed top-0 left-0 right-0 z-10 px-10 py-3 flex-1 justify-center items-center  shadow-[0_5px_15px_rgba(0,0,0,0.7)]"
     >
       <div className={` flex mt-0 items-center gap-x-4`}>
         <p className="name text-3xl ">AssetList</p>
@@ -35,9 +35,7 @@ const Header = () => {
         </div>
 
         <div className="ml-auto py-2 px-4">
-          
-            <ConnectButton label="Connect wallet" style={{}} />
-          
+          <ConnectButton label="Connect wallet" style={{}} />
         </div>
       </div>
     </nav>
