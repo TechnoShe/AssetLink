@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-ethers");
 require('@nomicfoundation/hardhat-toolbox');
+require ('@nomiclabs/hardhat-verify');
 require("dotenv").config();
 
 const { RPC_URL, PRIVATE_KEY } = process.env
@@ -14,23 +15,25 @@ module.exports = {
     },
   },
 
-  // sourcify: {
-  //   enabled: false
-  // },
-
-  //   etherscan: {
-  //     apiKey: {
-  //       cronosTestnet: process.env.ETHERSCAN_API_KEY, // <-- replace with your api key
-  //     },
-  //     customChains: [
-  //       {
-  //         network: "cronosTestnet",
-  //         chainId: 338,
-  //         urls: {
-  //           apiURL: "https://explorer-api.cronos.org/testnet/api/v1/hardhat/contract?apikey=process.env.API_KEY",// <-- replace the API service url and API key
-  //           browserURL: "http://explorer.cronos.org/testnet" // <-- replace the Cronos explorer url
-  //         }
-  //       }
-  //     ]
-  //   }  
-};
+  etherscan: {
+    apiKey: {
+      snowtrace: "snowtrace", // apiKey is not required, just set a placeholder
+    },
+    customChains: [
+      {
+        network: "snowtrace",
+        chainId: 43113,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/43113/etherscan",
+          browserURL: "https://avalanche.testnet.localhost:8080"
+        }
+      }
+    ]
+  },
+  networks: {
+    snowtrace: {
+      url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      accounts: [process.env.PRIVATE_KEY]
+    },
+  },
+} 
