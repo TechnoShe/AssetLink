@@ -1,43 +1,37 @@
 const hre = require("hardhat");
 
 async function main() {
+  const teleporterAddress = "0x253b2784c75e510dD0fF1da844684a1aC0aa5fcf";
+
     // Get signers from Hardhat
     const [deployer] = await ethers.getSigners();
     console.log("Deploying contracts with the account:", deployer.address);
 
-     // Deploy the Teleporter contract
-     const Teleporter = await ethers.getContractFactory("Teleporter");
-     const teleporter = await Teleporter.waitForDeployment();
-     console.log("Teleporter contract deployed to:", await teleporter.getAddress());
-
     // Step 1: Deploy RWA contract
     const RWA = await ethers.getContractFactory("RWA");
-    const rwa = await RWA.waitForDeployment();
+    const rwa = await RWA.deploy();
     console.log("RWA contract deployed to:", await rwa.getAddress());
 
     // Step 2: Deploy SecurityLayer contract
     const SecurityLayer = await ethers.getContractFactory("SecurityLayer");
-    const securityLayer = await SecurityLayer.waitForDeployment();
+    const securityLayer = await SecurityLayer.deploy();
     console.log("SecurityLayer contract deployed to:", await securityLayer.getAddress());
 
     // Step 3: Deploy FeeCollector contract with SecurityLayer as a dependency
     const FeeCollector = await ethers.getContractFactory("FeeCollector");
-    const feeCollector = await FeeCollector.waitForDeployment();
+    const feeCollector = await FeeCollector.deploy();
     console.log("FeeCollector contract deployed to:", await feeCollector.getAddress());
 
     // Step 4: Deploy TransferManager contract with RWA and Teleporter addresses
     const TeleporterAddress = "0xYourTeleporterAddress"; // Replace with actual Teleporter address
     const TransferManager = await ethers.getContractFactory("TransferManager");
-    const transferManager = await TransferManager.waitForDeployment(rwa.address, TeleporterAddress);
+    const transferManager = await TransferManager.deploy("0xe34c86A03F17E29F77beeE7c898Adae4dD578006", TeleporterAddress);
     console.log("TransferManager contract deployed to:", await transferManager.getAddress());
 
     // Step 5: Deploy AvalancheAssetLink contract with Teleporter address
     const AvalancheAssetLink = await ethers.getContractFactory("AvalancheAssetLink");
-    const avalancheAssetLink = await AvalancheAssetLink.waitForDeployment(TeleporterAddress);
+    const avalancheAssetLink = await AvalancheAssetLink.deploy(TeleporterAddress);
     console.log("AvalancheAssetLink contract deployed to:", await avalancheAssetLink.getAddress());
-
-    // Optionally: Configure or set any other parameters (like adding gas sponsors or roles)
-    // Example: feeCollector.addGasSponsor("0xYourSponsorAddress");
 }
 
 main()

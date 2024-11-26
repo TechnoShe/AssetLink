@@ -1,13 +1,5 @@
-# Sample Hardhat Project
-
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+RWA contract deployed to: 0xe34c86A03F17E29F77beeE7c898Adae4dD578006
+SecurityLayer contract deployed to: 0x7516abedc7e8ca01143ad636a6963B9887FC7Cf6
+FeeCollector contract deployed to: 0xA0BF7F60ec762cc7b88dEc415D46F12cFF130a55
+TransferManager contract deployed to: 0x41CD3d7753eeAD4c2d384a6C0074eA4c27dE36F1
+AvalancheAssetLink contract deployed to: 0x1d8c981FD95060A45b3Cea346DbF7b5b48f5CD36
