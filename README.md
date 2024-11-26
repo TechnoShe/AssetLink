@@ -88,6 +88,27 @@ Here are the deployed addresses:
 - TransferManager contract deployed to: 0x41CD3d7753eeAD4c2d384a6C0074eA4c27dE36F1
 - AvalancheAssetLink contract deployed to: 0x1d8c981FD95060A45b3Cea346DbF7b5b48f5CD36
 
+Here are the verified links to the deployed addresses:
+run npx hardhat verify --network snowtrace <contract address> <argument>
+
+- Successfully verified contract RWA on the block explorer.
+
+https://avalanche.testnet.localhost:8080/address/0xe34c86A03F17E29F77beeE7c898Adae4dD578006#code
+
+- Successfully verified contract SecurityLayer on the block explorer.
+
+https://avalanche.testnet.localhost:8080/address/0x7516abedc7e8ca01143ad636a6963B9887FC7Cf6#code
+
+- Successfully verified contract FeeCollector on the block explorer.
+
+https://avalanche.testnet.localhost:8080/address/0xA0BF7F60ec762cc7b88dEc415D46F12cFF130a55#code
+
+- Successfully verified contract TransferManager on the block explorer.
+https://avalanche.testnet.localhost:8080/address/0x41CD3d7753eeAD4c2d384a6C0074eA4c27dE36F1#code
+
+- Successfully verified contract AvalancheAssetLink on the block explorer.
+https://avalanche.testnet.localhost:8080/address/0x1d8c981FD95060A45b3Cea346DbF7b5b48f5CD36#code
+
 
 # 8. Testing
 Run the test suite:

@@ -1,6 +1,6 @@
 require("@nomicfoundation/hardhat-ethers");
 require('@nomicfoundation/hardhat-toolbox');
-require ('@nomiclabs/hardhat-verify');
+require("@nomicfoundation/hardhat-verify");
 require("dotenv").config();
 
 const { RPC_URL, PRIVATE_KEY } = process.env

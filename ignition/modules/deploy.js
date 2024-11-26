@@ -25,7 +25,7 @@ async function main() {
     // Step 4: Deploy TransferManager contract with RWA and Teleporter addresses
     const TeleporterAddress = "0xYourTeleporterAddress"; // Replace with actual Teleporter address
     const TransferManager = await ethers.getContractFactory("TransferManager");
-    const transferManager = await TransferManager.deploy("0xe34c86A03F17E29F77beeE7c898Adae4dD578006", TeleporterAddress);
+    const transferManager = await TransferManager.deploy(rwa.address, TeleporterAddress);
     console.log("TransferManager contract deployed to:", await transferManager.getAddress());
 
     // Step 5: Deploy AvalancheAssetLink contract with Teleporter address

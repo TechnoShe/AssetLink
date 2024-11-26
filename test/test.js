@@ -13,22 +13,22 @@ describe("Smart Contracts Test Suite", function () {
 
         const SecurityLayer = await ethers.getContractFactory("SecurityLayer");
         securityLayer = await SecurityLayer.deploy();
-        await securityLayer.deployed();
+        await securityLayer.waitForDeployment();
 
         const FeeCollector = await ethers.getContractFactory("FeeCollector");
         feeCollector = await FeeCollector.deploy();
-        await feeCollector.deployed();
+        await feeCollector.waitForDeployment();
 
         const TransferManager = await ethers.getContractFactory("TransferManager");
         transferManager = await TransferManager.deploy(
             rwa.address,
             "0x0000000000000000000000000000000000000000"
         );
-        await transferManager.deployed();
+        await transferManager.waitForDeployment();
 
         const AvalancheAssetLink = await ethers.getContractFactory("AvalancheAssetLink");
         assetLink = await AvalancheAssetLink.deploy(owner.address);
-        await assetLink.deployed();
+        await assetLink.waitForDeployment();
     });
 
     describe("RWA Contract Tests", function () {
