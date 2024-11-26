@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Ecosystem
 pragma solidity ^0.8.1;
 
 // Structs for cross-chain messaging

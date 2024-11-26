@@ -7,7 +7,7 @@ contract FeeCollector {
     address public owner;
     mapping(uint256 => uint256) public feesCollected;
     mapping(address => bool) public gasSponsors;
-    SecurityLayer public securityLayer;  // Add this line
+    SecurityLayer public securityLayer;
 
     event Fees_Collected(uint256 tokenId, uint256 amount);
     event Sponsor_Added(address sponsor);
