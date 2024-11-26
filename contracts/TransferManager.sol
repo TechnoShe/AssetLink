@@ -3,7 +3,6 @@ pragma solidity ^0.8.1;
 
 import "./RWA.sol";
 import "./interfaces/ITeleporterMessenger.sol";
-// import "./interfaces/ITeleporterReceiver.sol";
 
 contract TransferManager is ITeleporterReceiver {
     RWA private rwaContract;
@@ -19,7 +18,7 @@ contract TransferManager is ITeleporterReceiver {
     );
     event TransferCompleted(
         uint256 tokenId,
-        address originChain,
+        bytes32 originChain,  // Changed to bytes32
         address newOwner
     );
     event MessageProcessed(bytes32 messageId);
@@ -34,7 +33,8 @@ contract TransferManager is ITeleporterReceiver {
      */
     function initiateTransfer(
         uint256 tokenId,
-        address destinationL1
+        address destinationL1,
+        bytes32 destinationBlockchainID  // Added parameter to specify destination blockchain
     ) external {
         require(
             rwaContract.ownerOf(tokenId) == msg.sender,
@@ -48,19 +48,29 @@ contract TransferManager is ITeleporterReceiver {
             destinationL1
         );
 
-        // Send cross-chain message via Teleporter
-        bytes32 messageId = teleporter.sendCrossChainMessage(
-            destinationL1,
-            address(this),
-            payload,
-            address(0), // No gas sponsor
-            0           // No fee for simplicity
-        );
+        // Prepare fee info (assuming no fee for simplicity)
+        TeleporterFeeInfo memory feeInfo = TeleporterFeeInfo({
+            feeTokenAddress: address(0),
+            amount: 0
+        });
+
+        // Prepare message input
+        TeleporterMessageInput memory messageInput = TeleporterMessageInput({
+            destinationBlockchainID: destinationBlockchainID,  // Use provided blockchain ID
+            destinationAddress: destinationL1,
+            feeInfo: feeInfo,
+            requiredGasLimit: 100000, // Specify an appropriate gas limit
+            allowedRelayerAddresses: new address[](0),
+            message: payload
+        });
+
+        // Send cross-chain message
+        bytes32 messageId = teleporter.sendCrossChainMessage(messageInput);
 
         emit TransferInitiated(
             tokenId,
             destinationL1,
-            block.chainid, // Current chain ID
+            address(this),
             messageId
         );
     }
@@ -69,8 +79,8 @@ contract TransferManager is ITeleporterReceiver {
      * @notice Handles incoming cross-chain messages.
      */
     function receiveTeleporterMessage(
+        bytes32 sourceChainID,
         address originSender,
-        address originChain,
         bytes calldata payload
     ) external override {
         require(
@@ -92,10 +102,12 @@ contract TransferManager is ITeleporterReceiver {
         );
         processedMessages[messageId] = true;
 
-        // Update token ownership
-        rwaContract.transferOwnership(tokenId, owner);
+        // Transfer token
+        // Note: Ensure RWA contract has a method to transfer tokens across chains
+        // This might require a custom method in the RWA contract
+        rwaContract.safeTransferFrom(rwaContract.ownerOf(tokenId), owner, tokenId);
 
-        emit TransferCompleted(tokenId, originChain, owner);
+        emit TransferCompleted(tokenId, sourceChainID, owner);
         emit MessageProcessed(messageId);
     }
 }

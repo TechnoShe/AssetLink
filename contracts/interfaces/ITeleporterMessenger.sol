@@ -1,27 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
-// Struct for message receipt with validation checks
-struct TeleporterMessageReceipt {
-    uint256 receivedMessageNonce;
-    address relayerRewardAddress;
-}
-
+// Structs for cross-chain messaging
 struct TeleporterFeeInfo {
     address feeTokenAddress;
     uint256 amount;
 }
 
-struct TeleporterMessageInput {
-    bytes32 destinationBlockchainID;
-    address destinationAddress;
-    TeleporterFeeInfo feeInfo;
-    uint256 requiredGasLimit;
-    address[] allowedRelayerAddresses;
-    bytes message;
+struct TeleporterMessageReceipt {
+    uint256 receivedMessageNonce;
+    address relayerRewardAddress;
 }
 
-// Struct for the actual message with required checks
 struct TeleporterMessage {
     uint256 messageNonce;
     address originSenderAddress;
@@ -30,6 +20,15 @@ struct TeleporterMessage {
     uint256 requiredGasLimit;
     address[] allowedRelayerAddresses;
     TeleporterMessageReceipt[] receipts;
+    bytes message;
+}
+
+struct TeleporterMessageInput {
+    bytes32 destinationBlockchainID;
+    address destinationAddress;
+    TeleporterFeeInfo feeInfo;
+    uint256 requiredGasLimit;
+    address[] allowedRelayerAddresses;
     bytes message;
 }
 
@@ -67,33 +66,26 @@ interface ITeleporterMessenger {
 
     // Functions
     function sendCrossChainMessage(TeleporterMessageInput calldata messageInput) external returns (bytes32);
-
     function retrySendCrossChainMessage(TeleporterMessage calldata message) external;
-
     function addFeeAmount(
         bytes32 messageID,
         address feeTokenAddress,
         uint256 additionalFeeAmount
     ) external;
-
     function receiveCrossChainMessage(
         uint32 messageIndex,
         address relayerRewardAddress
     ) external;
-
     function retryMessageExecution(
         bytes32 sourceBlockchainID,
         TeleporterMessage calldata message
     ) external;
-
     function redeemRelayerRewards(address feeTokenAddress) external;
-
     function getMessageHash(bytes32 messageID) external view returns (bytes32);
-
     function messageReceived(bytes32 messageID) external view returns (bool);
 }
 
-// Interface for receiving messages (TeleporterReceiver)
+// Interface for receiving messages
 interface ITeleporterReceiver {
     function receiveTeleporterMessage(
         bytes32 sourceBlockchainID,

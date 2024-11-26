@@ -8,6 +8,11 @@ contract RWA is ERC721, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
 
+    // Override supportsInterface to resolve the multiple inheritance conflict
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+        return ERC721.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
+    }
+
     uint256 public tokenIdCounter;
     mapping(uint256 => string) public metadataURIs;
     mapping(uint256 => address[]) public fractionalOwners;
