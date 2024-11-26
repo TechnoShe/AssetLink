@@ -89,6 +89,7 @@ Here are the deployed addresses:
 - AvalancheAssetLink contract deployed to: 0x1d8c981FD95060A45b3Cea346DbF7b5b48f5CD36
 
 Here are the verified links to the deployed addresses:
+
 run npx hardhat verify --network snowtrace <contract address> <argument>
 
 - Successfully verified contract RWA on the block explorer.
