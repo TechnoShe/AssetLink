@@ -1,35 +1,39 @@
 const { expect } = require("chai");
 
-describe("Smart Contracts Test Suite", function () {
-    let rwa, securityLayer, feeCollector, transferManager, assetLink;
-    let owner, addr1, addr2;
+before(async function () {
+    [owner, addr1, addr2] = await ethers.getSigners();
 
-    before(async function () {
-        [owner, addr1, addr2] = await ethers.getSigners();
+    console.log("Deploying RWA...");
+    const RWA = await ethers.getContractFactory("RWA");
+    rwa = await RWA.deploy();
+    await rwa.waitForDeployment();
+    console.log("RWA deployed at:", rwa.target);
 
-        const RWA = await ethers.getContractFactory("RWA");
-        rwa = await RWA.deploy();
-        await rwa.waitForDeployment();
+    console.log("Deploying SecurityLayer...");
+    const SecurityLayer = await ethers.getContractFactory("SecurityLayer");
+    securityLayer = await SecurityLayer.deploy();
+    await securityLayer.waitForDeployment();
+    console.log("SecurityLayer deployed at:", securityLayer.target);
 
-        const SecurityLayer = await ethers.getContractFactory("SecurityLayer");
-        securityLayer = await SecurityLayer.deploy();
-        await securityLayer.waitForDeployment();
+    console.log("Deploying FeeCollector...");
+    const FeeCollector = await ethers.getContractFactory("FeeCollector");
+    feeCollector = await FeeCollector.deploy();
+    await feeCollector.waitForDeployment();
+    console.log("FeeCollector deployed at:", feeCollector.target);
 
-        const FeeCollector = await ethers.getContractFactory("FeeCollector");
-        feeCollector = await FeeCollector.deploy();
-        await feeCollector.waitForDeployment();
+    console.log("Deploying TransferManager...");
+    const TransferManager = await ethers.getContractFactory("TransferManager");
+    transferManager = await TransferManager.deploy(rwa.target, feeCollector.target);
+    await transferManager.waitForDeployment();
+    console.log("TransferManager deployed at:", transferManager.target);
 
-        const TransferManager = await ethers.getContractFactory("TransferManager");
-        transferManager = await TransferManager.deploy(
-            rwa.address,
-            "0x0000000000000000000000000000000000000000"
-        );
-        await transferManager.waitForDeployment();
+    console.log("Deploying AvalancheAssetLink...");
+    const AvalancheAssetLink = await ethers.getContractFactory("AvalancheAssetLink");
+    assetLink = await AvalancheAssetLink.deploy(owner.address);
+    await assetLink.waitForDeployment();
+    console.log("AvalancheAssetLink deployed at:", assetLink.target);
+});
 
-        const AvalancheAssetLink = await ethers.getContractFactory("AvalancheAssetLink");
-        assetLink = await AvalancheAssetLink.deploy(owner.address);
-        await assetLink.waitForDeployment();
-    });
 
     describe("RWA Contract Tests", function () {
         it("should mint a token successfully", async function () {
@@ -114,4 +118,4 @@ describe("Smart Contracts Test Suite", function () {
             // Additional assertions for emitted events can be added here
         });
     });
-});
+

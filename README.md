@@ -90,7 +90,7 @@ Here are the deployed addresses:
 
 Here are the verified links to the deployed addresses:
 
-run npx hardhat verify --network snowtrace <contract address> <argument>
+run npx hardhat verify --network snowtrace "contract address" "argument"
 
 - Successfully verified contract RWA on the block explorer.
 
