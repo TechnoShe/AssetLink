@@ -104,8 +104,6 @@ describe("Smart Contracts Test Suite", function () {
 
             // Wait for the transaction
             await tx.wait();
-
-            // You can add more specific assertions if needed
         });
     });
 

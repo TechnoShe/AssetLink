@@ -41,6 +41,21 @@ Avalanche AssetLink is designed to bridge the gap between traditional and decent
 4. TransferManager.sol: Facilitates cross-chain transfer of assets.
 5. AvalancheAssetLink.sol: Main contract managing cross-chain communication and platform logic.
 
+# Interfaces Used
+
+This project leverages several interfaces to ensure modularity and integration with cross-chain communication protocols. Below are the key interfaces and their purposes:
+
+1. **ITeleporterMessenger.sol**:
+   - Facilitates sending messages across chains using the Teleporter protocol.
+   - Key Functions:
+     - `sendMessage(bytes32 destChain, address receiver, uint256 fee, bytes memory payload)`: Sends a cross-chain message.
+
+2. **ITeleporterReceiver.sol**:
+   - Defines the standard for contracts that can receive cross-chain messages.
+   - Key Functions:
+     - `onMessage(bytes32 srcChain, address sender, bytes memory payload)`: Handles incoming messages.
+
+
 # 5. Project Architecture
 - Frontend:
 A React-based interface for asset management, transfers, and dashboard visualization.
@@ -117,6 +132,37 @@ Run the test suite:
 npx hardhat test
 
 View coverage reports:
+
+ Smart Contracts Test Suite
+
+    RWA Contract Tests
+
+      ✔ should mint a token successfully (58ms)
+
+      ✔ should update metadata with correct role (43ms)
+
+    FeeCollector Contract Tests
+
+      ✔ should collect fees successfully
+
+      ✔ should add and remove gas sponsors
+
+    SecurityLayer Contract Tests
+
+      ✔ should validate a correct signature
+
+      ✔ should reject an incorrect signature
+
+    TransferManager Contract Tests
+
+      ✔ should initiate a transfer
+
+    AvalancheAssetLink Contract Tests
+
+      ✔ should send a cross-chain message
+
+
+  8 passing (3s)
 
 
 # 9. Future Enhancements
