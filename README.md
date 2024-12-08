@@ -97,7 +97,7 @@ AVALANCHE_RPC_URL=your_rpc_url
 npx hardhat run ignition/modules/deploy.js --network AvalancheFujiTestnet
 
 Here are the deployed addresses:
-- RWA contract deployed to: 0xA352f3a3d3DFeB2ed83f2fB99C76725458198f27
+- RWA contract deployed to: 0x2c54B49695CA0e8F7375b6Dd628ba1B58FCD2a5F
 - SecurityLayer contract deployed to: 0x7516abedc7e8ca01143ad636a6963B9887FC7Cf6
 - FeeCollector contract deployed to: 0xA0BF7F60ec762cc7b88dEc415D46F12cFF130a55
 - TransferManager contract deployed to: 0x41CD3d7753eeAD4c2d384a6C0074eA4c27dE36F1

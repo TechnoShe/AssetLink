@@ -28,7 +28,8 @@ contract RWA is ERC721, AccessControl {
         _setupRole(UPDATER_ROLE, msg.sender);
     }
 
-    function mintRWA(address to, string memory metadataURI) external onlyRole(MINTER_ROLE) {
+    function mintRWA(address to, string memory metadataURI) external {
+        require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
         uint256 newTokenId = tokenIdCounter++;
         _safeMint(to, newTokenId);
         metadataURIs[newTokenId] = metadataURI;
@@ -36,37 +37,33 @@ contract RWA is ERC721, AccessControl {
         emit RWA_Minted(newTokenId, to, metadataURI);
     }
 
-    function updateMetadata(uint256 tokenId, string memory metadataURI, bytes32 metadataHash) 
-        external 
-        onlyRole(UPDATER_ROLE) 
-    {
+    function updateMetadata(uint256 tokenId, string memory metadataURI, bytes32 metadataHash) external {
+        require(hasRole(UPDATER_ROLE, msg.sender), "Caller is not an updater");
         require(_exists(tokenId), "Token does not exist");
         metadataURIs[tokenId] = metadataURI;
 
         emit Metadata_Updated(tokenId, metadataURI, metadataHash);
     }
 
-    function grantMinterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    grantRole(MINTER_ROLE, account);
-}
+    // Removed onlyRole modifier for these functions
+    function grantMinterRole(address account) external {
+        grantRole(MINTER_ROLE, account);
+    }
 
-function revokeMinterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    revokeRole(MINTER_ROLE, account);
-}
+    function revokeMinterRole(address account) external {
+        revokeRole(MINTER_ROLE, account);
+    }
 
-function grantUpdaterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    grantRole(UPDATER_ROLE, account);
-}
+    function grantUpdaterRole(address account) external {
+        grantRole(UPDATER_ROLE, account);
+    }
 
-function revokeUpdaterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    revokeRole(UPDATER_ROLE, account);
-}
+    function revokeUpdaterRole(address account) external {
+        revokeRole(UPDATER_ROLE, account);
+    }
 
-
-    function setFractionalOwnership(uint256 tokenId, address[] memory owners, uint16[] memory shares) 
-        external 
-        onlyRole(MINTER_ROLE) 
-    {
+    function setFractionalOwnership(uint256 tokenId, address[] memory owners, uint16[] memory shares) external {
+        require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
         require(owners.length == shares.length, "Mismatched inputs");
         uint256 totalShares = 0;
         for (uint256 i = 0; i < shares.length; i++) {
