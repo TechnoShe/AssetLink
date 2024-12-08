@@ -46,6 +46,23 @@ contract RWA is ERC721, AccessControl {
         emit Metadata_Updated(tokenId, metadataURI, metadataHash);
     }
 
+    function grantMinterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    grantRole(MINTER_ROLE, account);
+}
+
+function revokeMinterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    revokeRole(MINTER_ROLE, account);
+}
+
+function grantUpdaterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    grantRole(UPDATER_ROLE, account);
+}
+
+function revokeUpdaterRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    revokeRole(UPDATER_ROLE, account);
+}
+
+
     function setFractionalOwnership(uint256 tokenId, address[] memory owners, uint16[] memory shares) 
         external 
         onlyRole(MINTER_ROLE) 
