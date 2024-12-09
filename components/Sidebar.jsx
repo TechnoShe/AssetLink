@@ -27,7 +27,7 @@ const Sidebar = () => {
     ];
 
   return (
-    <div
+    <div className="text-white"
     //   style={{ background: "rgba(164, 178, 255, 0.2)" }}
     //   className="top-20 left-0 w-64 h-[calc(100vh-120px)] p-4 m-6 rounded-md mb-2 shadow-2xl shadow-black"
     >

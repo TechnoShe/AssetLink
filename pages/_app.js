@@ -1,11 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { http, createConfig } from "wagmi";
-import { localhost, mainnet, sepolia } from "wagmi/chains";
+import { mainnet, avalancheFuji } from "wagmi/chains";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   getDefaultConfig,
   RainbowKitProvider,
-  midnightTheme
+  midnightTheme,
 } from "@rainbow-me/rainbowkit";
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
@@ -14,7 +16,9 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 
 import "../styles/globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "@rainbow-me/rainbowkit/styles.css";
+import { RWAProvider } from "@/context/RWAContext";
 
 const queryClient = new QueryClient();
 
@@ -33,15 +37,12 @@ export default function App({ Component, pageProps }) {
   );
   const config = createConfig({
     connectors,
-    chains: [mainnet, sepolia, localhost],
+    chains: [mainnet, avalancheFuji],
     transports: {
       [mainnet.id]: http(
         "https://eth-mainnet.g.alchemy.com/v2/FJ2bntQOlBZ-CxnqVSPaD-RlU_h7VQ-d"
       ),
-      [sepolia.id]: http(
-        "https://eth-sepolia.g.alchemy.com/v2/FJ2bntQOlBZ-CxnqVSPaD-RlU_h7VQ-d"
-      ),
-      [localhost.id]: http("http://127.0.0.1:8545/"),
+      [avalancheFuji.id]: http("https://api.avax-test.network/ext/bc/C/rpc"),
     },
   });
 
@@ -49,7 +50,9 @@ export default function App({ Component, pageProps }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={midnightTheme()}>
-          <Component {...pageProps} />
+          <RWAProvider>
+            <Component {...pageProps} />
+          </RWAProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

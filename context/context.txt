@@ -1,0 +1,350 @@
+import React, { createContext, useContext, useState, useEffect } from "react";
+// import Web3 from "web3";
+import { CONTRACT_ADDRESSES } from "../constants/addresses";
+import { ABIS } from "../constants/abis";
+import { useAccount } from "wagmi";
+import { ethers } from "ethers";
+
+// Create a Context for Blockchain
+const RWAContext = createContext();
+
+export const RWAProvider = ({ children }) => {
+  const [rwaContract, setRwaContract] = useState(null);
+  const [securityLayerContract, setSecurityLayerContract] = useState(null);
+  const [feeCollectorContract, setFeeCollectorContract] = useState(null);
+  const [transferManagerContract, setTransferManagerContract] = useState(null);
+  const [avalancheAssetLinkContract, setAvalancheAssetLinkContract] =
+    useState(null);
+
+  const [tokenDetails, setTokenDetails] = useState([]);
+  const [metadataURI, setMetadataURI] = useState("");
+  const [ownerAddress, setOwnerAddress] = useState("");
+  const [transactionHash, setTransactionHash] = useState("");
+
+  const { isConnected, address } = useAccount();
+  const account = useAccount();
+  const chainId = account.chainId;
+
+  useEffect(() => {
+    const fetchContracts = async () => {
+      if (typeof window !== "undefined" && window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        // Initialize contracts
+        const rwa = new ethers.Contract(
+          CONTRACT_ADDRESSES.RWA,
+          ABIS.RWA,
+          signer
+        );
+
+        const securityLayer = new ethers.Contract(
+          CONTRACT_ADDRESSES.SECURITY_LAYER,
+          ABIS.SECURITY_LAYER,
+          signer
+        );
+        const feeCollector = new ethers.Contract(
+          CONTRACT_ADDRESSES.FEE_COLLECTOR,
+          ABIS.FEE_COLLECTOR,
+          signer
+        );
+        const transferManager = new ethers.Contract(
+          CONTRACT_ADDRESSES.TRANSFER_MANAGER,
+          ABIS.TRANSFER_MANAGER,
+          signer
+        );
+        const avalancheAssetLink = new ethers.Contract(
+          CONTRACT_ADDRESSES.AVALANCHE_ASSET_LINK,
+          ABIS.AVALANCHE_ASSET_LINK,
+          signer
+        );
+
+        setRwaContract(rwa);
+        setSecurityLayerContract(securityLayer);
+        setFeeCollectorContract(feeCollector);
+        setTransferManagerContract(transferManager);
+        setAvalancheAssetLinkContract(avalancheAssetLink);
+      } else {
+        alert("Ethereum provider not found. Please install MetaMask.");
+      }
+    };
+
+    fetchContracts();
+  }, []);
+
+  // MINTING RWA
+  const mintRWA = async (to, metadataURI) => {
+    if (rwaContract) {
+      try {
+        const tx = await rwaContract.methods
+          .mintRWA(to, metadataURI)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error minting RWA:", error);
+      }
+    }
+  };
+
+  const updateMetadata = async (tokenId, metadataURI, metadataHash) => {
+    if (rwaContract) {
+      try {
+        const tx = await rwaContract.methods
+          .updateMetadata(tokenId, metadataURI, metadataHash)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error updating metadata:", error);
+      }
+    }
+  };
+  // Listen to contract events
+  rwaContract.on("RWA_Minted", async (tokenId, owner, metadataURI) => {
+    console.log(`RWA Minted: ${tokenId}, ${owner}, ${metadataURI}`);
+    await handleNewAsset(tokenId, owner, metadataURI);
+  });
+
+  rwaContract.on(
+    "Metadata_Updated",
+    async (tokenId, newMetadataURI, metadataHash) => {
+      console.log(`Metadata Updated: ${tokenId}, ${newMetadataURI}`);
+      await updateAssetMetadata(tokenId, newMetadataURI);
+    }
+  );
+
+  rwaContract.on(
+    "Fractional_Ownership_Set",
+    async (tokenId, owners, shares) => {
+      console.log(`Fractional Ownership Set: ${tokenId}, ${owners}, ${shares}`);
+      await updateFractionalOwnership(tokenId, owners, shares);
+    }
+  );
+
+  const validateSignature = async (hash, signature, user) => {
+    if (securityLayerContract) {
+      try {
+        const isValid = await securityLayerContract.methods
+          .validateSignature(hash, signature, user)
+          .call();
+        return isValid;
+      } catch (error) {
+        console.error("Error validating signature:", error);
+      }
+    }
+  };
+  
+
+  const collectFees = async (tokenId, amount) => {
+    if (feeCollectorContract) {
+      try {
+        const tx = await feeCollectorContract.methods
+          .collectFees(tokenId, amount)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error collecting fees:", error);
+      }
+    }
+  };
+
+  const initiateTransfer = async (
+    tokenId,
+    destinationL1,
+    destinationBlockchainID
+  ) => {
+    if (transferManagerContract) {
+      try {
+        const tx = await transferManagerContract.methods
+          .initiateTransfer(tokenId, destinationL1, destinationBlockchainID)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error initiating transfer:", error);
+      }
+    }
+  };
+
+  // New function wrappers
+  const setFractionalOwnership = async (tokenId, owners, shares) => {
+    if (rwaContract) {
+      try {
+        const tx = await rwaContract.methods
+          .setFractionalOwnership(tokenId, owners, shares)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error setting fractional ownership:", error);
+      }
+    }
+  };
+
+  const getMetadataURIs = async (tokenId) => {
+    if (rwaContract) {
+      try {
+        const uri = await rwaContract.methods.metadataURIs(tokenId).call();
+        return uri;
+      } catch (error) {
+        console.error("Error fetching metadata URI:", error);
+      }
+    }
+  };
+
+  const getFractionalOwners = async (tokenId) => {
+    if (rwaContract) {
+      try {
+        const owners = await rwaContract.methods
+          .fractionalOwners(tokenId)
+          .call();
+        return owners;
+      } catch (error) {
+        console.error("Error fetching fractional owners:", error);
+      }
+    }
+  };
+
+  const getOwnershipShares = async (tokenId) => {
+    if (rwaContract) {
+      try {
+        const shares = await rwaContract.methods
+          .ownershipShares(tokenId)
+          .call();
+        return shares;
+      } catch (error) {
+        console.error("Error fetching ownership shares:", error);
+      }
+    }
+  };
+
+  const validateData = async (dataHash) => {
+    if (securityLayerContract) {
+      try {
+        const isValid = await securityLayerContract.methods
+          .validateData(dataHash)
+          .call();
+        return isValid;
+      } catch (error) {
+        console.error("Error validating data:", error);
+      }
+    }
+  };
+
+  const feesCollected = async () => {
+    if (feeCollectorContract) {
+      try {
+        const collectedFees = await feeCollectorContract.methods
+          .feesCollected()
+          .call();
+        return collectedFees;
+      } catch (error) {
+        console.error("Error fetching fees collected:", error);
+      }
+    }
+  };
+
+  const receiveTeleporterMessage = async (message) => {
+    if (transferManagerContract) {
+      try {
+        const tx = await transferManagerContract.methods
+          .receiveTeleporterMessage(message)
+          .send({ from: accounts[0] });
+        return tx;
+      } catch (error) {
+        console.error("Error receiving teleporter message:", error);
+      }
+    }
+  };
+
+  const processedMessages = async () => {
+    if (transferManagerContract) {
+      try {
+        const messages = await transferManagerContract.methods
+          .processedMessages()
+          .call();
+        return messages;
+      } catch (error) {
+        console.error("Error fetching processed messages:", error);
+      }
+    }
+  };
+
+  const handleNewAsset = async (tokenId, owner, metadataURI) => {
+    try {
+      // Save asset details to Glacier
+      const response = await axios.post(`${GLACIER_API_URL}/assets`, {
+        tokenId,
+        owner,
+        metadataURI,
+      });
+      console.log("Asset details stored in Glacier:", response.data);
+      setAssets((prev) => [...prev, response.data]);
+    } catch (error) {
+      console.error("Error saving asset to Glacier", error);
+    }
+  };
+
+  const updateAssetMetadata = async (tokenId, newMetadataURI) => {
+    try {
+      // Update the asset metadata on Glacier
+      const response = await axios.put(`${GLACIER_API_URL}/assets/${tokenId}`, {
+        metadataURI: newMetadataURI,
+      });
+      console.log("Updated asset metadata in Glacier:", response.data);
+      setAssets((prev) =>
+        prev.map((asset) => (asset.tokenId === tokenId ? response.data : asset))
+      );
+    } catch (error) {
+      console.error("Error updating asset metadata", error);
+    }
+  };
+
+  const updateFractionalOwnership = async (tokenId, owners, shares) => {
+    try {
+      // Store fractional ownership details to Glacier
+      const response = await axios.put(
+        `${GLACIER_API_URL}/assets/${tokenId}/ownership`,
+        {
+          owners,
+          shares,
+        }
+      );
+      console.log("Updated fractional ownership in Glacier:", response.data);
+      setAssets((prev) =>
+        prev.map((asset) => (asset.tokenId === tokenId ? response.data : asset))
+      );
+    } catch (error) {
+      console.error("Error updating fractional ownership", error);
+    }
+  };
+
+  return (
+    <RWAContext.Provider
+      value={{
+        account,
+        mintRWA,
+        updateMetadata,
+        validateSignature,
+        collectFees,
+        initiateTransfer,
+        setFractionalOwnership,
+        getMetadataURIs,
+        getFractionalOwners,
+        getOwnershipShares,
+        validateData,
+        feesCollected,
+        receiveTeleporterMessage,
+        processedMessages,
+        rwaContract,
+        securityLayerContract,
+        feeCollectorContract,
+        transferManagerContract,
+        avalancheAssetLinkContract,
+      }}
+    >
+      {children}
+    </RWAContext.Provider>
+  );
+};
+
+export const useBlockchain = () => {
+  return useContext(RWAContext);
+};

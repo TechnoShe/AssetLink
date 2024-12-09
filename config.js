@@ -1,12 +1,8 @@
-import { createConfig, http } from "wagmi"
-import { mainnet, sepolia } from "wagmi/chains"
+import dotenv from "dotenv";
+dotenv.config();
 
-export const config = createConfig({
-    autoconnect: true,
-    chains: [mainnet, sepolia],
-    transports: {
-        [mainnet.id]: http(),
-        [sepolia.id]: http(),
-    },
-})
-
+export const configs = {
+  NEXT_GLACIER_API_KEY: process.env.NEXT_GLACIER_API_KEY,
+  NEXT_PINATA_JWT: process.env.NEXT_PINATA_JWT,
+  NEXT_PINATA_GATEWAY_URL: process.env.NEXT_PINATA_GATEWAY_URL,
+};

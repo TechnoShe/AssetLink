@@ -9,7 +9,8 @@ const Header = () => {
 
   const navigation = [
     { title: "Dashboard", path: "/" },
-    { title: "Asset Management", path: "/" },
+    { title: "Create", path: "/" },
+    { title: "Asset Management", path: "/assetManagement" },
     { title: "Settings", path: "/" }
   ];
 
@@ -17,7 +18,7 @@ const Header = () => {
   return (
     <nav
       style={{ background: "rgba(164, 178, 255, 0.2)" }}
-      className=" fixed top-0 left-0 right-0 z-10 px-10 py-3 flex-1 justify-center items-center  shadow-[0_5px_15px_rgba(0,0,0,0.7)]"
+      className=" fixed text-white top-0 left-0 right-0 z-10 px-10 py-3 flex-1 justify-center items-center  shadow-[0_5px_15px_rgba(0,0,0,0.7)]"
     >
       <div className={` flex mt-0 items-center gap-x-4`}>
         <p className="name text-3xl ">AssetList</p>
