@@ -187,12 +187,12 @@ const MintRWA = ({ onClose }) => {
           </div>
         )}
 
-        {uploadError && (
+        {/* {uploadError && (
           <div className="mb-4 text-red-600 text-center">{uploadError}</div>
-        )}
+        )} */}
 
         <button
-          onClick={mintNFT}
+          // onClick={mintNFT}
           disabled={isUploading}
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
         >
